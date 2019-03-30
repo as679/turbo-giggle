@@ -1,0 +1,65 @@
+---
+- hosts: localhost
+  connection: local
+  
+  vars:
+    app_name: "{{ my_vs_name }}"
+    pool_server1: 172.21.1.21
+    pool_server2: 172.21.1.22
+
+  vars_files:
+    - credentials.yml 
+  roles:
+    - role: avinetworks.avisdk
+  
+  tasks:
+    - set_fact:
+        desired_state: "{{ state|default('present') }}"
+
+    - name: Create health monitor
+      avi_healthmonitor:
+        avi_credentials: "{{ avi_credentials }}"
+        name: "{{ app_name }}_hm"
+        http_monitor:
+          http_request: "HEAD / HTTP/1.0"
+          http_response_code:
+            - HTTP_2XX
+            - HTTP_3XX
+        receive_timeout: 4
+        failed_checks: 3
+        send_interval: 10
+        successful_checks: 3
+        type: HEALTH_MONITOR_HTTP
+        state: "{{ desired_state }}"
+
+    - name: Create pool
+      avi_pool:
+        avi_credentials: "{{ avi_credentials }}"
+        name: "{{ app_name }}_pool"
+        lb_algorithm: LB_ALGORITHM_ROUND_ROBIN
+        health_monitor_refs:
+          - "/api/healthmonitor?name={{ app_name }}_hm"
+        servers:
+          - ip:
+               addr: "{{ pool_server1 }}"
+               type: 'V4'
+          - ip:
+               addr: "{{ pool_server2 }}"
+               type: 'V4'
+        state: "{{ desired_state }}"
+    
+    - name: Create Virtualservice
+      avi_virtualservice:
+        avi_credentials: "{{ avi_credentials }}"
+        name: "{{ app_name }}"
+        services:
+          - port: 80
+        pool_ref: "/api/pool?name={{ app_name }}_pool"
+        auto_allocate_ip: "true"
+        subnet:
+          ip_addr:
+            addr: "172.21.0.0"
+            type: "V4"
+          mask: "24"
+        state: "{{ desired_state }}"
+

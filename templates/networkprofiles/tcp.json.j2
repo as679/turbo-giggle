@@ -1,0 +1,15 @@
+{
+  "networkprofile": [
+    {
+      "tenant": "{{ application.tenant }}",
+      "state": "{{ application.desired_state }}",
+      "name": "{{ application.name }}_networkprofile",
+      "profile": {
+        "type": "PROTOCOL_TYPE_TCP_PROXY",
+        "tcp_proxy_profile": {
+          "automatic": "true"
+        }
+      },
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  connection: local
+  vars_files:
+    - credentials.yml
+
+  roles:
+    - avinetworks.avisdk
+
+  tasks:
+    - name: Test the avi_api_session module
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: get
+        path: "{{ avi_path }}"
+        params: "{{ avi_params | default({}) }}"
+      register: avi_output
+
+    - set_fact:
+        avi_output: "{{ avi_output.obj.results }}"
+      when: avi_output.obj.results is defined
+
+    - name: Display the output
+      debug:
+        var: avi_output

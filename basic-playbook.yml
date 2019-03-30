@@ -1,0 +1,6 @@
+---
+- hosts: server1.lab
+
+  tasks:
+    - name: Verify connectivity
+      ping:

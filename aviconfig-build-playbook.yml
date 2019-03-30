@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  connection: local
+  vars_files:
+    - credentials.yml
+  vars:
+    applications:
+      - tenant: admin
+        desired_state: absent
+        name: test_one 
+        hm_type: ping
+        np_type: tcp
+        ap_type: l4
+        servers:
+          "172.21.1.21": "80"
+          "172.21.1.22": "80"
+      - tenant: admin
+        desired_state: absent
+        name: another_test 
+        hm_type: tcp
+        np_type: tcp
+        ap_type: l4
+        servers:
+          "172.21.1.21": "80"
+          "172.21.1.22": "80"
+
+  roles:
+    - role: avinetworks.avisdk
+
+  tasks:
+    - include: avi_builder.yml
+      with_items: "{{ applications }}"
+      loop_control:
+        loop_var: application
+

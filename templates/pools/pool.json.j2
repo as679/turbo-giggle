@@ -1,0 +1,24 @@
+{
+  "pool": [
+    {
+      "tenant": "{{ application.tenant }}",
+      "state": "{{ application.desired_state }}",
+      "name": "{{ application.name }}_pool",
+      "lb_algorithm": "LB_ALGORITHM_LEAST_CONNECTIONS",
+      "health_monitor_refs": [
+          "/api/healthmonitor?name={{ application.name }}_healthmonitor",
+      ],
+      "servers": [
+{% for server, port in application.servers.iteritems() %}
+        {
+          "port": "{{ port }}",
+          "ip": {
+            "addr": "{{ server }}",
+            "type": "V4"
+          }
+        },
+{% endfor %}
+      ]
+    }
+  ]
+}

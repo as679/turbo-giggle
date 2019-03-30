@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    avi_credentials:
+      controller: controller.student1.lab
+      username: admin
+      password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37356236386563383838306161363866666638656466383965376132613136383534303238336136
+          6566376362383463383230366532376236333438663533310a343263653931646662343163373766
+          30653063656537643162343034346339333233323832326339646566333439653237303239366238
+          6565363037303530390a313939613239373539313630313734303666346633653232383337303636
+          3361
+
+  roles:
+    - avinetworks.avisdk
+
+  tasks:
+    - name: Collect the version information from the Avi Controller
+      avi_api_version:
+        avi_credentials: "{{ avi_credentials }}"
+      register: avi_version
+
+    - name: Display the version information
+      debug:
+        var: avi_version

@@ -1,0 +1,26 @@
+{
+  "virtualservice": [
+    {
+      "state": "{{ application.desired_state }}",
+      "tenant": "{{ application.tenant }}",
+      "name": "{{ application.name }}_virtualservice",
+      "services": [
+        {
+          "port": "80"
+        }
+      ],
+      "pool_ref": "/api/pool?name={{ application.name }}_pool",
+      "application_profile_ref": "/api/applicationprofile?name={{ application.name }}_applicationprofile",
+      "network_profile_ref": "/api/networkprofile?name={{ application.name }}_networkprofile",
+      "analytics_profile_ref": "/api/analyticsprofile?name={{ application.name }}_analyticsprofile",
+      "auto_allocate_ip": "true",
+      "subnet": {
+        "ip_addr": {
+          "addr": "172.21.0.0",
+          "type": "V4"
+        },
+        "mask": "24"
+      }
+    }
+  ]
+}
