@@ -1,0 +1,40 @@
+---
+- name: Lookup the healthmonitor
+  set_fact:
+    avi_healthmonitor_json: "{{ lookup('template', 'templates/healthmonitors/{{ application.hm_type }}.json.j2', convert_data=False) }}"
+- name: Lookup the networkprofile
+  set_fact:
+    avi_networkprofile_json: "{{ lookup('template', 'templates/networkprofiles/{{ application.np_type }}.json.j2', convert_data=False) }}"
+- name: Lookup the applicationprofile
+  set_fact:
+    avi_applicationprofile_json: "{{ lookup('template', 'templates/applicationprofiles/{{ application.ap_type }}.json.j2', convert_data=False) }}"
+- name: Lookup the pool
+  set_fact:
+    avi_pool_json: "{{ lookup('template', 'templates/pools/pool.json.j2', convert_data=False) }}"
+- name: Lookup the applicationprofile
+  set_fact:
+    avi_analyticsprofile_json: "{{ lookup('template', 'templates/analyticsprofiles/analyticsprofile.json.j2', convert_data=False) }}"
+- name: Lookup the virtualservice
+  set_fact:
+    avi_virtualservice_json: "{{ lookup('template', 'templates/virtualservices/virtualservice.json.j2', convert_data=False) }}"
+- debug:
+    var=avi_virtualservice_json
+
+- set_fact:
+    avi_config: "{{ avi_healthmonitor_json }}"
+- set_fact:
+    avi_config: "{{ avi_config|combine( item ) }}"
+  with_items:
+    - "{{ avi_networkprofile_json }}" 
+    - "{{ avi_applicationprofile_json }}"
+    - "{{ avi_pool_json }}"
+    - "{{ avi_analyticsprofile_json }}"
+    - "{{ avi_virtualservice_json }}"
+
+- debug:
+    var=avi_config  
+
+- import_role:
+    name: avinetworks.aviconfig
+  vars:
+    avi_creds_file: credentials.yml
