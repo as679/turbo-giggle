@@ -6,6 +6,7 @@
   vars:
     applications:
       - tenant: admin
+        cloud: AWS
         desired_state: absent
         name: test_one 
         hm_type: ping
@@ -15,6 +16,7 @@
           "172.21.1.21": "80"
           "172.21.1.22": "80"
       - tenant: admin
+        cloud: AWS
         desired_state: absent
         name: another_test 
         hm_type: tcp
