@@ -4,6 +4,7 @@
       "tenant": "{{ application.tenant }}",
       "state": "{{ application.desired_state }}",
       "name": "{{ application.name }}_pool",
+      "cloud_ref" : "/api/cloud?name={{ application.cloud }}",
       "lb_algorithm": "LB_ALGORITHM_LEAST_CONNECTIONS",
       "health_monitor_refs": [
           "/api/healthmonitor?name={{ application.name }}_healthmonitor",
