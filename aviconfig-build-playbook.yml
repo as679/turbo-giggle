@@ -1,13 +1,15 @@
 ---
 - hosts: localhost
   connection: local
-  vars_files:
-    - credentials.yml
   vars:
+    avi_credentials:
+      username: admin
+      password: "{{ hostvars['jumpbox.student.lab']['Lab_avi_admin_password'] }}"
+      controller: "{{ avi_controller }}"
     applications:
       - tenant: admin
         cloud_name: AWS
-        desired_state: absent
+        desired_state: present
         name: test_one 
         hm_type: ping
         np_type: tcp
@@ -17,7 +19,7 @@
           "172.20.1.22": "80"
       - tenant: admin
         cloud_name: AWS
-        desired_state: absent
+        desired_state: present
         name: another_test 
         hm_type: tcp
         np_type: tcp

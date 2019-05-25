@@ -36,5 +36,4 @@
 
 - import_role:
     name: avinetworks.aviconfig
-  vars:
-    avi_creds_file: credentials.yml
+
