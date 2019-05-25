@@ -4,6 +4,7 @@
       "state": "{{ application.desired_state }}",
       "tenant": "{{ application.tenant }}",
       "name": "{{ application.name }}_virtualservice",
+      "cloud_ref": "/api/cloud?name={{ application.cloud_name }}",
       "services": [
         {
           "port": "80"
